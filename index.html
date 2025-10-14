@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نموذج تقييم المهارات الذاتي - قسم التسويق</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #5d50c6;
+            --secondary-color: #00bcd4;
+            --success-color: #4caf50;
+            --error-color: #f44336;
+            --background-color: #f7f9fc; 
+            --card-background: #ffffff; 
+            --text-color: #333;
+            --sub-text-color: #6c757d;
+            --shadow-subtle: 0 10px 30px rgba(0, 0, 0, 0.08); 
+            --input-border: #e0e0e0;
+            --input-focus: rgba(93, 80, 198, 0.2);
+            --transition-speed: 0.5s; 
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 95%;
+            margin: 40px auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px 0 10px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            font-weight: 900;
+        }
+        
+        .intro-text {
+            color: var(--sub-text-color);
+            margin-bottom: 25px;
+            padding: 15px;
+            border-right: 4px solid var(--secondary-color);
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            font-size: 1.05em;
+        }
+        
+        .form-section {
+            background: var(--card-background);
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: var(--shadow-subtle);
+            margin-bottom: 30px;
+            overflow: hidden; 
+        }
+
+        h2 {
+            font-size: 2em;
+            color: var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            font-weight: 800;
+            border-bottom: 2px solid var(--input-border);
+        }
+        
+        .step { display: none; padding-top: 20px; }
+        .step.active { display: block; animation: slideIn var(--transition-speed) forwards; }
+        .step.active.slide-right { animation: slideInRight var(--transition-speed) forwards; }
+        .step.active.slide-left { animation: slideInLeft var(--transition-speed) forwards; }
+
+        @keyframes slideInLeft { from { opacity: 0; transform: translateX(100%); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(-100%); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        label { display: block; margin-bottom: 8px; font-weight: 700; font-size: 1.1em; color: var(--text-color); }
+        .form-group { margin-bottom: 30px; }
+        
+        input[type="text"], input[type="number"], textarea {
+            width: 100%; padding: 16px; border: 2px solid var(--input-border); border-radius: 12px;
+            box-sizing: border-box; background-color: var(--background-color); color: var(--text-color);
+            transition: all var(--transition-speed) ease; font-size: 1em;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 400;
+        }
+        input:focus, textarea:focus { border-color: var(--primary-color); box-shadow: 0 0 0 4px var(--input-focus); outline: none; }
+        .success-bg { background-color: #e6ffe6 !important; border-color: var(--success-color) !important; }
+        .error-bg { background-color: #ffeaea !important; border-color: var(--error-color) !important; }
+        
+        ::placeholder { 
+            color: var(--sub-text-color);
+            opacity: 0.8; 
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 400;
+        }
+
+        .rating-grid, .ranking-options {
+            display: grid; 
+            gap: 8px; 
+            direction: ltr; 
+            margin-top: 15px;
+            grid-template-columns: repeat(5, 1fr); 
+        }
+        .ranking-options {
+             grid-template-columns: repeat(4, 1fr); 
+        }
+        
+        .rating-grid label, .ranking-options label {
+            text-align: center;
+            padding: 10px 5px; 
+            border: 2px solid var(--input-border); 
+            border-radius: 8px; 
+            cursor: pointer;
+            transition: all 0.2s ease; 
+            font-weight: 700; 
+            background-color: var(--background-color);
+            font-size: 0.9em; 
+            display: flex; 
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .rating-grid input[type="radio"], .ranking-options input[type="radio"] { display: none; }
+        .rating-grid input[type="radio"]:checked + label, .ranking-options input[type="radio"]:checked + label {
+            background-color: var(--primary-color); 
+            color: white; 
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 10px rgba(93, 80, 198, 0.4); 
+            transform: scale(1.05);
+        }
+        
+        .ranking-item {
+            display: flex; flex-direction: column; padding: 15px 0; border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .progress-bar-container { padding: 18px; background: var(--card-background); border-radius: 18px; box-shadow: var(--shadow-subtle); margin-bottom: 30px; }
+        .progress-bar { height: 8px; background: var(--input-border); border-radius: 10px; }
+        .progress-indicator { background-color: var(--primary-color); border-radius: 10px; transition: width var(--transition-speed) ease; }
+        .progress-labels { margin: 10px 0 0; font-size: 1em; }
+        .progress-labels span { font-weight: 700; transition: color var(--transition-speed); }
+        .progress-labels .active-label { color: var(--primary-color); font-weight: 800; }
+        .progress-labels i { margin-left: 5px; }
+        
+        .navigation-buttons { display: flex; justify-content: space-between; gap: 15px; margin-top: 40px; }
+        .nav-btn { 
+            flex-grow: 1; padding: 18px 30px; border: none; border-radius: 12px; cursor: pointer; 
+            font-size: 1.1em; 
+            font-weight: 800; 
+            transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+            font-family: 'Tajawal', sans-serif; 
+        }
+        .prev-btn { background: #e9ecef; color: var(--sub-text-color); }
+        .prev-btn:hover { background: #dee2e6; }
+        .next-btn { background: var(--primary-color); color: var(--card-background); }
+        .next-btn:hover { background: #4a41a3; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(93, 80, 198, 0.5); }
+        .submit-btn { background: var(--success-color); color: white; }
+        .submit-btn:hover { background: #388e3c; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(76, 175, 80, 0.5); }
+        .submit-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .loading-overlay.active {
+            display: flex;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 600px) {
+            .container { margin: 0; width: 100%; }
+            body { padding: 10px 0; align-items: flex-start; }
+            .form-section, .progress-bar-container { border-radius: 0; box-shadow: none; margin-bottom: 10px; }
+            .navigation-buttons { flex-direction: column; gap: 10px; }
+            .rating-grid, .ranking-options { gap: 5px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+</div>
+
+<div class="container">
+    <form id="multistepForm">
+        <div class="header">
+            <h1>تقييم المهارات الذاتية في قسم التسويق</h1>
+        </div>
+        
+        <div class="progress-bar-container">
+            <div class="progress-bar"><div class="progress-indicator" id="progressIndicator"></div></div>
+            <div class="progress-labels">
+                <span id="labelStep1" class="active-label"><i class="fas fa-id-card"></i> 1. البيانات</span>
+                <span id="labelStep2"><i class="fas fa-chart-line"></i> 2. المهارات (14 سؤال)</span>
+                <span id="labelStep3"><i class="fas fa-star"></i> 3. التفضيلات والأهداف</span>
+            </div>
+        </div>
+
+        <div class="form-section step active" id="step1">
+            <div class="intro-text">
+                <strong>شكراً جزيلاً لوقتكم وجهدكم الثمين.</strong> نحن نقدر مشاركتكم في هذا التقييم الذاتي للمهارات. الهدف الأساسي من هذا النموذج هو مساعدتنا جميعاً في فهم نقاط قوتكم وخبراتكم الحالية ضمن قسم التسويق، لتحديد أفضل موقع لكل فرد في الهيكل التنظيمي الجديد.
+            </div>
+
+            <h2>الخطوة 1: البيانات الشخصية</h2>
+            <div class="form-group">
+                <label for="empNumber">رقم الموظف:</label>
+                <input type="number" id="empNumber" required onchange="populateEmployeeInfo()">
+            </div>
+            
+            <div class="form-group">
+                <label for="empName">الاسم:</label>
+                <input type="text" id="empName" readonly required placeholder="سيظهر الاسم تلقائياً بعد إدخال الرقم">
+            </div>
+
+            <div class="form-group">
+                <label for="empTitle">المسمى الوظيفي الحالي:</label>
+                <input type="text" id="empTitle" readonly required placeholder="سيظهر المسمى الوظيفي تلقائياً">
+            </div>
+
+            <div class="navigation-buttons">
+                <button type="button" class="nav-btn next-btn" onclick="nextStep(2, 'left')">التالي: تقييم المهارات <i class="fas fa-arrow-left"></i></button>
+            </div>
+        </div>
+        
+        <div class="form-section step" id="step2">
+            <h2>الخطوة 2: تقييم المهارات الذاتية (14 سؤال)</h2>
+            
+            <div class="intro-text" style="border-right: 4px solid var(--primary-color); background: var(--background-color); margin-bottom: 20px;">
+                <p><strong>يرجى قراءة كل مهمة أو مهارة أدناه، ثم تحديد مدى خبرتك الحالية فيها من 1 إلى 5. كن صادقاً قدر الإمكان:</strong></p>
+                <p style="margin-right: 20px; line-height: 2;">
+                    <strong style="color: var(--error-color);">1. مبتدئ جداً / لا خبرة لي:</strong> لم أقم بهذه المهمة من قبل، أو لدي معرفة نظرية بسيطة جداً.<br>
+                    <strong style="color: #ff9800;">2. قليل الخبرة:</strong> قمت بها مرة أو مرتين، لكنني أحتاج إلى مساعدة وإشراف مستمر.<br>
+                    <strong style="color: var(--sub-text-color);">3. متوسط الخبرة:</strong> أستطيع أداء هذه المهمة بشكل جيد ومعتاد، لكنني أحتاج إلى بعض التوجيهات.<br>
+                    <strong style="color: var(--secondary-color);">4. خبرة عالية:</strong> أستطيع إنجاز هذه المهمة بنجاح وكفاءة بمفردي ودون إشراف.<br>
+                    <strong style="color: var(--success-color);">5. خبير / قائد:</strong> أستطيع قيادة هذه المهمة وتدريب أعضاء الفريق الآخرين عليها.
+                </p>
+            </div>
+            
+            <div class="form-group">
+                <label>1. فهم الأرقام المالية: النظر إلى تكاليف المنتج، الإيرادات، وتحديد أهداف المبيعات.</label>
+                <div class="rating-grid">
+                    <input type="radio" id="skill1_1" name="skill1" value="1" required><label for="skill1_1">1</label>
+                    <input type="radio" id="skill1_2" name="skill1" value="2"><label for="skill1_2">2</label>
+                    <input type="radio" id="skill1_3" name="skill1" value="3"><label for="skill1_3">3</label>
+                    <input type="radio" id="skill1_4" name="skill1" value="4"><label for="skill1_4">4</label>
+                    <input type="radio" id="skill1_5" name="skill1" value="5"><label for="skill1_5">5</label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>2. البحث عن أفكار جديدة للمنتجات: التفكير في دورات أو خدمات جديدة يحتاجها السوق.</label>
+                <div class="rating-grid">
+                    <input type="radio" id="skill2_1" name="skill2" value="1" required><label for="skill2_1">1</label>
+                    <input type="radio" id="skill2_2" name="skill2" value="2"><label for="skill2_2">2</label>
+                    <input type="radio" id="skill2_3" name="skill2" value="3"><label for="skill2_3">3</label>
+                    <input type="radio" id="skill2_4" name="skill2" value="4"><label for="skill2_4">4</label>
+                    <input type="radio" id="skill2_5" name="skill2" value="5"><label for="skill2_5">5</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>3. دراسة المنافسين: البحث عما تفعله الشركات الأخرى لتحديد والحفاظ على الميزة التنافسية.</label>
+                <div class="rating-grid">
+                    <input type="radio" id="skill3_1" name="skill3" value="1" required><label for="skill3_1">1</label>
+                    <input type="radio" id="skill3_2" name="skill3" value="2"><label for="skill3_2">2</label>
+                    <input type="radio" id="skill3_3" name="skill3" value="3"><label for="skill3_3">3</label>
+                    <input type="radio" id="skill3_4" name="skill3" value="4"><label for="skill3_4">4</label>
+                    <input type="radio" id="skill3_5" name="skill3" value="5"><label for="skill3_5">5</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>4. التخطيط طويل الأمد: إنشاء خارطة طريق لمدة 6 أشهر أو سنة للمنتجات والخدمات لضمان تحقيق الأهداف المالية.</label>
+                <div class="rating-grid">
+                    <input type="radio" id="skill4_1" name="skill4" value="1" required><label for="skill4_1">1</label>
+                    <input type="radio" id="skill4_2" name="skill4" value="2"><label for="skill4_2">2</label>
+                    <input type="radio" id="skill4_3" name="skill4" value="3"><label for="skill4_3">3</label>
+                    <input type="radio" id="skill4_4" name="skill4" value="4"><label for="skill4_4">4</label>
+                    <input type="radio" id="skill4_5" name="skill4" value="5"><label for="skill4_5">5</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>5. العمل مع البيانات والأرقام: استخدام أدوات مثل إكسل (Excel) لتحليل البيانات واستخلاص توصيات فعالة.</label>
+                <div class="rating-grid">
+                    <input type="radio" id="skill5_1" name="skill5" value="1" required><label for="skill5_1">1</label>
+                    <input type="radio" id="skill5_2" name="skill5" value="2"><label for="skill5_2">2</label>
+                    <input type="radio" id="skill5_3" name="skill5" value="3"><label for="skill5_3">3</label>
+                    <input type="radio" id="skill5_4" name="skill5" value="4"><label for="skill5_4">4</label>
+                    <input type="radio" id="skill5_5" name="skill5" value="5"><label for="skill5_5">5</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>6. إجراء الاستطلاعات وتحليل النتائج: التخطيط للأسئلة وتحليل النتائج وإعداد التقارير والتوصيات.</label>
+                <div class="rating-grid">
+                    <input type="radio" id="skill6_1" name="skill6" value="1" required><label for="skill6_1">1</label>
+                    <input type="radio" id="skill6_2" name="skill6" value="2"><label for="skill6_2">2</label>
+                    <input type="radio" id="skill6_3" name="skill6" value="3"><label for="skill6_3">3</label>
+                    <input type="radio" id="skill6_4" name="skill6" value="4"><label for="skill6_4">4</label>
+                    <input type="radio" id="skill6_5" name="skill6" value="5"><label for="skill6_5">5</label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>7. ترجمة البيانات إلى خطط عمل: تحويل نتائج البحث إلى تقارير واضحة وبسيطة لغير المختصين.</label>
+                <div class="rating-grid">
+                    <input type="radio" id="skill7_1" name="skill7" value="1" required><label for="skill7_1">1</label>
+                    <input type="radio" id="skill7_2" name="skill7" value="2"><label for="skill7_2">2</label>
+                    <input type="radio" id="skill7_3" name="skill7" value="3"><label for="skill7_3">3</label>
+                    <input type="radio" id="skill7_4" name="skill7" value="4"><label for="skill7_4">4</label>
+                    <input type="radio" id="skill7_5" name="skill7" value="5"><label for="skill7_5">5</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>8. اختبار الأفكار: إعداد تجارب صغيرة لمعرفة أي محتوى أو سعر يعمل بشكل أفضل (مثل اختبار A/B).</label>
+                <div class="rating-grid">
+                    <input type="radio" id="skill8_1" name="skill8" value="1" required><label for="skill8_1">1</label>
+                    <input type="radio" id="skill8_2" name="skill8" value="2"><label for="skill8_2">2</label>
+                    <input type="radio" id="skill8_3" name="skill8" value="3"><label for="skill8_3">3</label>
+                    <input type="radio" id="skill8_4" name="skill8" value="4"><label for="skill8_4">4</label>
+                    <input type="radio" id="skill8_5" name="skill8" value="5"><label for="skill8_5">5</label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>9. وضع خطة تقويم المحتوى: تحديد ما سيتم نشره، ومتى، وعلى أي منصة (مدونة، بريد إلكتروني، سوشال ميديا).</label>
+                <div class="rating-grid">
+                    <input type="radio" id="skill9_1" name="skill9" value="1" required><label for="skill9_1">1</label>
+                    <input type="radio" id="skill9_2" name="skill9" value="2"><label for="skill9_2">2</label>
+                    <input type="radio" id="skill9_3" name="skill9" value="3"><label for="skill9_3">3</label>
+                    <input type="radio" id="skill9_4" name="skill9" value="4"><label for="skill9_4">4</label>
+                    <input type="radio" id="skill9_5" name="skill9" value="5"><label for="skill9_5">5</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>10. كتابة نصوص إعلانية جذابة (Copywriting): تحويل ميزة المنتج إلى رسالة قوية ومثيرة تدفع الناس للنقر.</label>
+                <div class="rating-grid">
+                    <input type="radio" id="skill10_1" name="skill10" value="1" required><label for="skill10_1">1</label>
+                    <input type="radio" id="skill10_2" name="skill10" value="2"><label for="skill10_2">2</label>
+                    <input type="radio" id="skill10_3" name="skill10" value="3"><label for="skill10_3">3</label>
+                    <input type="radio" id="skill10_4" name="skill10" value="4"><label for="skill10_4">4</label>
+                    <input type="radio" id="skill10_5" name="skill10" value="5"><label for="skill10_5">5</label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>11. إدارة الإعلانات المدفوعة: إعداد وإدارة ميزانيات الإعلانات على منصات مثل فيسبوك أو جوجل أو تيك توك.</label>
+                <div class="rating-grid">
+                    <input type="radio" id="skill11_1" name="skill11" value="1" required><label for="skill11_1">1</label>
+                    <input type="radio" id="skill11_2" name="skill11" value="2"><label for="skill11_2">2</label>
+                    <input type="radio" id="skill11_3" name="skill11" value="3"><label for="skill11_3">3</label>
+                    <input type="radio" id="skill11_4" name="skill11" value="4"><label for="skill11_4">4</label>
+                    <input type="radio" id="skill11_5" name="skill11" value="5"><label for="skill11_5">5</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>12. إدارة مجموعات الدردشة: الإشراف على مجموعات WhatsApp أو Facebook للحفاظ على إيجابيتها وتركيزها.</label>
+                <div class="rating-grid">
+                    <input type="radio" id="skill12_1" name="skill12" value="1" required><label for="skill12_1">1</label>
+                    <input type="radio" id="skill12_2" name="skill12" value="2"><label for="skill12_2">2</label>
+                    <input type="radio" id="skill12_3" name="skill12" value="3"><label for="skill12_3">3</label>
+                    <input type="radio" id="skill12_4" name="skill12" value="4"><label for="skill12_4">4</label>
+                    <input type="radio" id="skill12_5" name="skill12" value="5"><label for="skill12_5">5</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>13. التفاعل الإيجابي والسريع: الرد على التعليقات والرسائل الخاصة بسرعة وبلباقة على جميع صفحات الشركة.</label>
+                <div class="rating-grid">
+                    <input type="radio" id="skill13_1" name="skill13" value="1" required><label for="skill13_1">1</label>
+                    <input type="radio" id="skill13_2" name="skill13" value="2"><label for="skill13_2">2</label>
+                    <input type="radio" id="skill13_3" name="skill13" value="3"><label for="skill13_3">3</label>
+                    <input type="radio" id="skill13_4" name="skill13" value="4"><label for="skill13_4">4</label>
+                    <input type="radio" id="skill13_5" name="skill13" value="5"><label for="skill13_5">5</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>14. تنظيم آراء المستخدمين: جمع الملاحظات والاقتراحات من المجتمع ومشاركتها مع فرق تطوير المنتج.</label>
+                <div class="rating-grid">
+                    <input type="radio" id="skill14_1" name="skill14" value="1" required><label for="skill14_1">1</label>
+                    <input type="radio" id="skill14_2" name="skill14" value="2"><label for="skill14_2">2</label>
+                    <input type="radio" id="skill14_3" name="skill14" value="3"><label for="skill14_3">3</label>
+                    <input type="radio" id="skill14_4" name="skill14" value="4"><label for="skill14_4">4</label>
+                    <input type="radio" id="skill14_5" name="skill14" value="5"><label for="skill14_5">5</label>
+                </div>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button type="button" class="nav-btn prev-btn" onclick="prevStep(1, 'right')"><i class="fas fa-arrow-right"></i> رجوع للبيانات</button>
+                <button type="button" class="nav-btn next-btn" onclick="nextStep(3, 'left')">التالي: التفضيلات <i class="fas fa-arrow-left"></i></button>
+            </div>
+        </div>
+        
+        <div class="form-section step" id="step3">
+            <h2>الخطوة 3: التفضيلات والأهداف المهنية</h2>
+
+            <div class="form-group">
+                <h3>15. ترتيب الأقسام حسب الرغبة (1 = أفضل ملائمة، 4 = الأقل ملائمة).</h3>
+                <p style="color:var(--sub-text-color); font-weight: 400;">يرجى اختيار ترتيب فريد لكل قسم (مثلاً: لا يمكن اختيار "1" إلا لقسم واحد، و "2" لقسم واحد، وهكذا).</p>
+                
+                <div class="ranking-item">
+                    <label>1. القسم 1: إدارة الأعمال (جني الأرباح والتخطيط)</label>
+                    <div class="ranking-options">
+                        <input type="radio" id="dept1_1" name="rankDept1" value="1" required onchange="validateUniqueRanking()"><label for="dept1_1">1</label>
+                        <input type="radio" id="dept1_2" name="rankDept1" value="2" onchange="validateUniqueRanking()"><label for="dept1_2">2</label>
+                        <input type="radio" id="dept1_3" name="rankDept1" value="3" onchange="validateUniqueRanking()"><label for="dept1_3">3</label>
+                        <input type="radio" id="dept1_4" name="rankDept1" value="4" onchange="validateUniqueRanking()"><label for="dept1_4">4</label>
+                    </div>
+                </div>
+
+                <div class="ranking-item">
+                    <label>2. القسم 2: وحدة CVD (تحليل البيانات، البحوث، والتخطيط)</label>
+                    <div class="ranking-options">
+                        <input type="radio" id="dept2_1" name="rankDept2" value="1" required onchange="validateUniqueRanking()"><label for="dept2_1">1</label>
+                        <input type="radio" id="dept2_2" name="rankDept2" value="2" onchange="validateUniqueRanking()"><label for="dept2_2">2</label>
+                        <input type="radio" id="dept2_3" name="rankDept2" value="3" onchange="validateUniqueRanking()"><label for="dept2_3">3</label>
+                        <input type="radio" id="dept2_4" name="rankDept2" value="4" onchange="validateUniqueRanking()"><label for="dept2_4">4</label>
+                    </div>
+                </div>
+
+                <div class="ranking-item">
+                    <label>3. القسم 3: التسويق الرقمي (الحملات، المحتوى، والإعلانات)</label>
+                    <div class="ranking-options">
+                        <input type="radio" id="dept3_1" name="rankDept3" value="1" required onchange="validateUniqueRanking()"><label for="dept3_1">1</label>
+                        <input type="radio" id="dept3_2" name="rankDept3" value="2" onchange="validateUniqueRanking()"><label for="dept3_2">2</label>
+                        <input type="radio" id="dept3_3" name="rankDept3" value="3" onchange="validateUniqueRanking()"><label for="dept3_3">3</label>
+                        <input type="radio" id="dept3_4" name="rankDept3" value="4" onchange="validateUniqueRanking()"><label for="dept3_4">4</label>
+                    </div>
+                </div>
+
+                <div class="ranking-item" style="border-bottom:none;">
+                    <label>4. القسم 4: إدارة المجتمع (التفاعل مع العملاء وبناء الروابط)</label>
+                    <div class="ranking-options">
+                        <input type="radio" id="dept4_1" name="rankDept4" value="1" required onchange="validateUniqueRanking()"><label for="dept4_1">1</label>
+                        <input type="radio" id="dept4_2" name="rankDept4" value="2" onchange="validateUniqueRanking()"><label for="dept4_2">2</label>
+                        <input type="radio" id="dept4_3" name="rankDept4" value="3" onchange="validateUniqueRanking()"><label for="dept4_3">3</label>
+                        <input type="radio" id="dept4_4" name="rankDept4" value="4" onchange="validateUniqueRanking()"><label for="dept4_4">4</label>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" id="finalDeptRanking" name="finalDeptRanking" required>
+
+            <div class="form-group">
+                <label for="firstChoiceReason">16. ما هو القسم الذي تختاره كخيارك الأول على الإطلاق، ولماذا؟</label>
+                <textarea id="firstChoiceReason" rows="4" required placeholder="اشرح في 2-3 جمل لماذا اخترت هذا الفريق وكيف ستساعد مهاراتك في نجاحه."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="tools">17. يرجى ذكر أي أدوات أو برامج تستخدمها جيداً</label>
+                <input type="text" id="tools" required placeholder="مثال: Google Analytics, Trello, Figma">
+            </div>
+
+            <div class="form-group">
+                <label for="goals">18. هل هناك أي شيء آخر تريد أن نعرفه عن أهدافك المهنية أو نوع العمل الذي تستمتع به أكثر؟</label>
+                <textarea id="goals" rows="4" placeholder="هنا يمكن ذكر أي تطلعات إضافية."></textarea>
+            </div>
+
+            <div class="navigation-buttons">
+                <button type="button" class="nav-btn prev-btn" onclick="prevStep(2, 'right')"><i class="fas fa-arrow-right"></i> رجوع للمهارات</button>
+                <button type="submit" class="nav-btn submit-btn" id="submitBtn">إرسال التقييم المكتمل <i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+        
+    </form>
+    
+    <div class="intro-text" id="thankYouMessage" style="display: none; text-align: center; margin-top: 30px; border-left: 6px solid var(--success-color); border-right: none;">
+        <strong>نشكركم مرة أخرى على وقتكم وصدقكم في الإجابة.</strong> لقد كانت مشاركتكم قيمة جداً، وستساعدنا هذه البيانات على بناء قسم تسويق أكثر فعالية وتنظيماً. سنتواصل معكم قريباً بخصوص الخطوات التالية في عملية إعادة الهيكلة. نتطلع إلى العمل معكم في هذا الهيكل الجديد!
+    </div>
+</div>
+
+<script>
+    // --- Constants (Keep Supabase config) ---
+    const SUPABASE_URL = 'https://gizyshpolnjbasmdjxhi.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdpenlzaHBvbG5qYmFzbWRqeGhpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MTA1NDIsImV4cCI6MjA3NTk4NjU0Mn0.rd9qFH2iJjMzDfAIt8BxAbTjFseV7ax_LntbONJQgDM';
+
+    let currentStep = 1;
+    const totalSteps = 3;
+    const loadingOverlay = document.getElementById('loadingOverlay');
+
+    const employeesData = [
+        { number: 3562, name: "Ayham Yousef Rasheed Elayan", title: "Commercial Coordinator" },
+        { number: 3635, name: "Tala Saleem Saleh Abu-Sokkar", title: "Commercial Coordinator" },
+        { number: 3668, name: "Leen Sliman Yousef Abd-Eljabbar", title: "Commercial Coordinator" },
+        { number: 3729, name: "Enas Nabil Badie Alkhatib", title: "Commercial Coordinator" },
+        { number: 4316, name: "Roaa Emad Samih Ramadan", title: "Commercial Coordinator" },
+        { number: 4370, name: "Rima Anwer Mohammad Almansasrah", title: "Commercial Coordinator" },
+        { number: 4390, name: "Hafiza Jamal Mohammad Badwan", title: "Commercial Coordinator" },
+        { number: 1142, name: "Ahmad Qasim Mohammad Almahmoud", title: "Digital Marketing Officer" },
+        { number: 1705, name: "Emad Mohmmad Mousa Jarrar", title: "Digital Marketing Specialist" },
+        { number: 1713, name: "Wala Zeyad Sami Maali", title: "Digital Marketing Specialist" },
+        { number: 3535, name: "Abdollah Mohammad Shaban Shaban", title: "Digital Marketing Team Leader" },
+        { number: 3550, name: "Hadeel Walid Kamel Yasin", title: "Digital Marketing Officer" },
+        { number: 3551, name: "Ahlam Mkhled Adil Al-Dabbas", title: "Digital Marketing Officer" },
+        { number: 3608, name: "Esraa Zaher Hafez Aljaddo", title: "Digital Marketing Officer" },
+        { number: 3612, name: "Esraa Atallah Mohammad Al-Nassan", title: "Digital Marketing Officer" },
+        { number: 3613, name: "Anoud Zahir Ismail Alazzeh", title: "Digital Marketing Team Leader" },
+        { number: 3622, name: "Dareen Mousa Mahmoud Alzeer", title: "Digital Marketing Specialist" },
+        { number: 3697, name: "Meera Mamon Mohammad Altamimi", title: "Digital Marketing Officer" },
+        { number: 3739, name: "Abedelhadi Saleh Abdelhadi Alqwasmeh", title: "Digital Marketing Officer" },
+        { number: 3929, name: "Sara Khamis Issa Alnoush", title: "Digital Marketing Officer" },
+        { number: 3988, name: "Saba Abdulraheem Ali Alasuli", title: "Digital Marketing Specialist" },
+        { number: 3989, name: "Lina Izzldeen Ali Alfakeer Alrababa", title: "Digital Marketing Officer" },
+        { number: 3998, name: "Abdallah Mohammad Shamsi Abdel-Rahman", title: "Digital Marketing Officer" },
+        { number: 4014, name: "Majid Adel Atia Alheow", title: "Digital Marketing Officer" },
+        { number: 4068, name: "Alaaaldeen Nader Mohammad Shaalan", title: "Digital Marketing Officer" },
+        { number: 4069, name: "Ahmad Sultan Abdelmajeed Alhaddad", title: "Digital Marketing Officer" },
+        { number: 4070, name: "Bader Hisham Abdelrahman Alkhatib", title: "Digital Marketing Officer" },
+        { number: 4141, name: "Majd Osama Mohammad Alqisi", title: "Digital Marketing Officer" },
+        { number: 4160, name: "Momen Khaldoon Mohammad Tawfiq Hatamleh", title: "Digital Marketing Officer" },
+        { number: 4161, name: "Mary Adel Mousa Sharab", title: "Digital Marketing Officer" },
+        { number: 4162, name: "Einas Aiman Abdullah Aljubaihe", title: "Digital Marketing Officer" },
+        { number: 4224, name: "Salam Mah'd Ali Zorba", title: "Digital Marketing Officer" },
+        { number: 4267, name: "Ayham Jihad Awad Alquraan", title: "Digital Marketing Officer" },
+        { number: 4286, name: "Rand Hassan Muhyealdeen Abulobeh", title: "Digital Marketing Officer" },
+        { number: 4291, name: "Rabi Rawhi Alaaldin Abuzir", title: "Digital Marketing Officer" },
+        { number: 4309, name: "Nedal Ayman Mohammad Alqaysi", title: "Digital Marketing Officer" },
+        { number: 4314, name: "Sara Mohammad Ali Albraik", title: "Digital Marketing Officer" },
+        { number: 4315, name: "Omar Sufyan Abedalfattah Abusaleh", title: "Digital Marketing Officer" },
+        { number: 4451, name: "Mohammad Zakariya Omar Shishani", title: "Digital Marketing Officer" },
+        { number: 4457, name: "Areen Shamsher Ali mohammad Ali joedre", title: "Digital Marketing Officer" },
+        { number: 4458, name: "Zeena Ghassan Dawood Alzain", title: "Digital Marketing Officer" },
+        { number: 4467, name: "Hadeel Abdallah Mahmoud Alrefay", title: "Digital Marketing Specialist" },
+        { number: 4468, name: "Abdel rahman Mahmoud Abed Aburamadan", title: "Digital Marketing Specialist" },
+        { number: 4469, name: "Noor Aldeen Hani Fayez Husein", title: "Digital Marketing Specialist" },
+        { number: 4478, name: "Moayad Mah'd Moh'd Almegdade", title: "Digital Marketing Specialist" },
+        { number: 4479, name: "Hasan Moh'd Ali Hasan Shurbaji", title: "Digital Marketing Officer" },
+        { number: 4480, name: "Jawad Omar Ali Abu-shawish", title: "Digital Marketing Officer" },
+        { number: 4481, name: "Malak Ahmad Mah'd Asad", title: "Digital Marketing Officer" },
+        { number: 4482, name: "Wafa' Ibrahim Ismail Ghazal", title: "Digital Marketing Officer" },
+        { number: 4483, name: "Deema Khaled Abdallah Obeidat", title: "Digital Marketing Officer" },
+        { number: 4499, name: "Mozun Mohammad Said Zawaneh", title: "Digital Marketing Officer" },
+        { number: 4500, name: "Hala Ayman Abdelrahmin Abuhejleh", title: "Digital Marketing Officer" },
+        { number: 4501, name: "Qusai Mohammad Ramadan Aljboor", title: "Digital Marketing Officer" },
+        { number: 1126, name: "Raghad Eid Rushdy Hamdan", title: "Digital Marketing Specialist" },
+    ];
+
+    function populateEmployeeInfo() {
+        setTimeout(() => {
+            const inputElement = document.getElementById('empNumber');
+            const inputNumber = parseInt(inputElement.value);
+            const employee = employeesData.find(emp => emp.number === inputNumber);
+            
+            const nameField = document.getElementById('empName');
+            const titleField = document.getElementById('empTitle');
+
+            nameField.classList.remove('success-bg', 'error-bg');
+            titleField.classList.remove('success-bg', 'error-bg');
+
+            if (employee) {
+                nameField.value = employee.name;
+                titleField.value = employee.title;
+                nameField.classList.add('success-bg');
+                titleField.classList.add('success-bg');
+            } else {
+                nameField.value = "❌ لم يتم العثور على الرقم الوظيفي.";
+                titleField.value = "يرجى التحقق من الرقم المدخل.";
+                nameField.classList.add('error-bg');
+                titleField.classList.add('error-bg');
+            }
+        }, 100); 
+    }
+
+    // 💡 وظيفة التحقق من الترتيب الفريد وتحديث الحقل المخفي (Q15)
+    function validateUniqueRanking() {
+        const deptNames = ["rankDept1", "rankDept2", "rankDept3", "rankDept4"];
+        const rankingItems = document.querySelectorAll('.ranking-item');
+        const selectedRanks = {};
+        const finalRanking = [];
+        let isValid = true;
+        
+        // 1. إزالة أي علامات خطأ سابقة وإعادة تعيين الحقل المخفي
+        document.getElementById('finalDeptRanking').value = "";
+        rankingItems.forEach(item => {
+            // Re-apply the bottom border for all but the last item
+            if (!item.style.borderBottom || item.style.borderBottom !== 'none') {
+                item.style.border = 'none'; // Clear error border first
+                item.style.borderBottom = '1px solid #f0f0f0';
+            } else {
+                 item.style.border = 'none';
+            }
+            item.style.padding = '15px 0'; // Reset padding
+        });
+
+        // 2. التحقق من كل قسم
+        deptNames.forEach((deptName, index) => {
+            const checkedInput = document.querySelector(`input[name="${deptName}"]:checked`);
+            if (checkedInput) {
+                const rank = checkedInput.value;
+                const departmentLabelElement = rankingItems[index].querySelector('label:not([for])');
+                const departmentLabel = departmentLabelElement ? departmentLabelElement.textContent.trim() : `القسم ${index + 1}`;
+                
+                if (selectedRanks[rank]) {
+                    isValid = false; // الترتيب غير فريد
+                } else {
+                    selectedRanks[rank] = departmentLabel;
+                }
+                
+                finalRanking.push({ rank: parseInt(rank), department: departmentLabel.split(':')[1].trim() });
+            }
+        });
+        
+        const allRanksSelected = Object.keys(selectedRanks).length === 4;
+
+        if (isValid && allRanksSelected) {
+            // ✅ الترتيب صحيح: تحديث الحقل المخفي
+            finalRanking.sort((a, b) => a.rank - b.rank);
+            document.getElementById('finalDeptRanking').value = JSON.stringify(finalRanking.map(item => `${item.rank}:${item.department}`));
+            return true;
+        } else {
+            // ❌ الترتيب غير صحيح أو ناقص
+            return false;
+        }
+    }
+
+    // 💡 وظيفة عامة للتحقق من خطوة محددة (تم تحديثها لتكون أكثر دقة)
+    function validateStep(stepIndex) {
+        const currentStepElement = document.getElementById(`step${stepIndex}`);
+        const requiredInputs = currentStepElement.querySelectorAll('[required]');
+        
+        // 1. تحقق من حقل رقم الموظف (الخطوة 1 فقط)
+        if (stepIndex === 1) {
+            const empName = document.getElementById('empName').value;
+            if (empName.includes('❌') || !empName.trim() || !document.getElementById('empNumber').value.trim()) {
+                alert('الرجاء إدخال رقم وظيفي صحيح ومعترف به للمتابعة.');
+                document.getElementById('empNumber').focus();
+                return false;
+            }
+        }
+        
+        // 2. التحقق العام لجميع الحقول المطلوبة (النصية والراديو)
+        for (const input of requiredInputs) {
+            if (input.type === 'radio') {
+                const radioGroupName = input.name;
+                if (!currentStepElement.querySelector(`input[name="${radioGroupName}"]:checked`)) {
+                    alert('الرجاء الإجابة على جميع أسئلة التقييم المطلوبة في هذه الصفحة.');
+                    // Scroll to the problematic question
+                    input.closest('.form-group').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return false;
+                }
+            } else if (!input.value.trim()) {
+                // This will catch empty text/textarea and the hidden ranking input if it's empty
+                 if (input.id === 'finalDeptRanking') {
+                     // 💡 هنا يظهر التنبيه المخصص لسؤال الترتيب
+                    alert('الرجاء التأكد من اختيار ترتيب فريد (1، 2، 3، 4) لكل قسم، واختيار الترتيب كاملاً لجميع الأقسام.');
+                    document.querySelector('.ranking-item').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                 } else {
+                    alert('الرجاء ملء جميع الحقول النصية المطلوبة في هذه الصفحة.');
+                    input.focus();
+                 }
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    function nextStep(step, direction) {
+        if (!validateStep(currentStep)) return;
+        
+        const currentElement = document.getElementById(`step${currentStep}`);
+        const nextElement = document.getElementById(`step${step}`);
+        
+        currentElement.classList.remove('active', 'slide-left', 'slide-right');
+        currentStep = step;
+        nextElement.classList.add('active', `slide-${direction}`);
+        updateProgressBar();
+    }
+
+    function prevStep(step, direction) {
+        const currentElement = document.getElementById(`step${currentStep}`);
+        const prevElement = document.getElementById(`step${step}`);
+        
+        currentElement.classList.remove('active', 'slide-left', 'slide-right');
+        currentStep = step;
+        prevElement.classList.add('active', `slide-${direction}`);
+        updateProgressBar();
+    }
+
+    function updateProgressBar() {
+        const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
+        document.getElementById('progressIndicator').style.width = `${progress}%`;
+
+        for (let i = 1; i <= totalSteps; i++) {
+            const label = document.getElementById(`labelStep${i}`);
+            label.classList.remove('active-label');
+            if (i === currentStep) label.classList.add('active-label');
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function submitToSupabase(formData) {
+        try {
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/skill_assessments`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                    'Prefer': 'return=minimal'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (!response.ok) {
+                const errorBody = await response.json().catch(() => response.text());
+                console.error('Supabase Error Response:', errorBody);
+                throw new Error(`HTTP error! status: ${response.status} - ${JSON.stringify(errorBody)}`);
+            }
+            return true;
+        } catch (error) {
+            console.error('خطأ في إرسال البيانات:', error);
+            throw error;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('step1').classList.add('active');
+        updateProgressBar();
+        
+        // ربط دالة التحقق بالـ onchange لكل حقل ترتيب
+        document.querySelectorAll('.ranking-options input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', validateUniqueRanking);
+        });
+        
+        document.getElementById('multistepForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!validateStep(currentStep)) return;
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            loadingOverlay.classList.add('active');
+
+            try {
+                const finalRankingStrings = JSON.parse(document.getElementById('finalDeptRanking').value);
+                const getDeptNameByRank = (rank) => {
+                    const item = finalRankingStrings.find(item => item.startsWith(`${rank}:`));
+                    return item ? item.split(':')[1].trim() : null;
+                };
+
+                const formData = {
+                    emp_number: parseInt(document.getElementById('empNumber').value),
+                    emp_name: document.getElementById('empName').value,
+                    emp_title: document.getElementById('empTitle').value,
+                    skill_1: parseInt(document.querySelector('input[name="skill1"]:checked').value),
+                    skill_2: parseInt(document.querySelector('input[name="skill2"]:checked').value),
+                    skill_3: parseInt(document.querySelector('input[name="skill3"]:checked').value),
+                    skill_4: parseInt(document.querySelector('input[name="skill4"]:checked').value),
+                    skill_5: parseInt(document.querySelector('input[name="skill5"]:checked').value),
+                    skill_6: parseInt(document.querySelector('input[name="skill6"]:checked').value),
+                    skill_7: parseInt(document.querySelector('input[name="skill7"]:checked').value),
+                    skill_8: parseInt(document.querySelector('input[name="skill8"]:checked').value),
+                    skill_9: parseInt(document.querySelector('input[name="skill9"]:checked').value),
+                    skill_10: parseInt(document.querySelector('input[name="skill10"]:checked').value),
+                    skill_11: parseInt(document.querySelector('input[name="skill11"]:checked').value),
+                    skill_12: parseInt(document.querySelector('input[name="skill12"]:checked').value),
+                    skill_13: parseInt(document.querySelector('input[name="skill13"]:checked').value),
+                    skill_14: parseInt(document.querySelector('input[name="skill14"]:checked').value),
+                    
+                    rank_1_dept: getDeptNameByRank(1),
+                    rank_2_dept: getDeptNameByRank(2),
+                    rank_3_dept: getDeptNameByRank(3),
+                    rank_4_dept: getDeptNameByRank(4),
+                    
+                    first_choice_reason: document.getElementById('firstChoiceReason').value,
+                    tools: document.getElementById('tools').value,
+                    goals: document.getElementById('goals').value || null
+                };
+
+                await submitToSupabase(formData);
+
+                document.getElementById('multistepForm').style.display = 'none';
+                document.getElementById('thankYouMessage').style.display = 'block';
+                
+                alert('✅ تم إرسال التقييم بنجاح! شكراً جزيلاً.');
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (error) {
+                alert('❌ حدث خطأ أثناء إرسال النموذج. الرجاء المحاولة مرة أخرى.');
+                submitBtn.disabled = false;
+            } finally {
+                loadingOverlay.classList.remove('active');
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
